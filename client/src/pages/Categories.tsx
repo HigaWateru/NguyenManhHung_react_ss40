@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Button, Form, Input, Modal, Select, Table, Tag } from "antd"
 import type { ColumnsType } from "antd/es/table"
 import axios from "axios"
@@ -9,6 +9,9 @@ export default function Categories() {
   const [loadingItem, setLoadingItem] = useState(false)
   const [open, setOpen] = useState(false)
   const [editing, setEditing] = useState<CategoryRow | null>(null)
+  const [search, setSearch] = useState<string>("")
+  const [statusFilter, setStatusFilter] = useState<string>("all")
+
 
   const [form] = Form.useForm()
 
@@ -35,6 +38,11 @@ export default function Categories() {
       )
     }
   ]
+
+  const filtered = useMemo(() => {
+    return rows.filter((r) => search ? (r.name + r.code).toLowerCase().includes(search.toLowerCase()) : true).filter((r) => statusFilter && statusFilter !== "all" ? r.status === statusFilter : true)
+  }, [rows, search, statusFilter])
+  
 
   function onAdd() {
     setEditing(null)
@@ -80,7 +88,18 @@ export default function Categories() {
         <Button type="primary" onClick={onAdd}>Thêm mới</Button>
       </div>
 
-      <Table columns={columns} dataSource={rows} rowKey="id" />
+      <div className="flex justify-end gap-3 mb-4">
+        <Select placeholder="Trạng thái" style={{ width: "200px" }} allowClear value={statusFilter} onChange={setStatusFilter}
+          options={[
+            { value: "all", label: "Tất cả" },
+            { value: "active", label: "Hoạt động" },
+            { value: "inactive", label: "Ngừng" },
+          ]}
+        />
+        <Input placeholder="Tìm kiếm" style={{ width: "300px" }} value={search} onChange={e => setSearch(e.target.value)}/>
+      </div>
+
+      <Table columns={columns} dataSource={filtered} rowKey="id" />
 
       <Modal open={open} title={editing ? "Sửa danh mục" : "Thêm danh mục"} onCancel={() => setOpen(false)} footer={null}>
         <Form form={form} layout="vertical" onFinish={onSubmit}>

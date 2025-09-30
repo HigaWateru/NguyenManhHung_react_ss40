@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Button, Form, Input, Modal, Select, Table, Image, Upload, Tag } from "antd"
 import type { ColumnsType } from "antd/es/table"
 import axios from "axios"
@@ -12,6 +12,8 @@ export default function Products() {
   const [open, setOpen] = useState(false)
   const [editing, setEditing] = useState<ProductRow | null>(null)
   const [loadingItem, setLoadingItem] = useState<boolean>(false)
+  const [search, setSearch] = useState<string>("")
+  const [statusFilter, setStatusFilter] = useState<string>("all")
 
   const [form] = Form.useForm()
 
@@ -19,6 +21,11 @@ export default function Products() {
     axios.get("http://localhost:8080/products?_expand=category").then(res => setRows(res.data))
     axios.get("http://localhost:8080/categories").then(res => setCategories(res.data))
   }, [])
+
+  const filtered = useMemo(() => {
+    return rows.filter((r) => search ? (r.name + r.code).toLowerCase().includes(search.toLowerCase()) : true).filter((r) =>statusFilter && statusFilter !== "all" ? r.status === statusFilter : true)
+  }, [rows, search, statusFilter])
+
 
   const columns: ColumnsType<ProductRow> = [
     { title: "Mã", dataIndex: "code" },
@@ -97,8 +104,18 @@ export default function Products() {
         <h2 className="text-lg font-semibold">Quản lý sản phẩm</h2>
         <Button type="primary" onClick={onAdd}>Thêm mới</Button>
       </div>
+      <div className="flex justify-end gap-3 mb-4">
+        <Select placeholder="Trạng thái" className="min-w-40" allowClear value={statusFilter} onChange={setStatusFilter}
+          options={[
+            { value: "all", label: "Tất cả" },
+            { value: "active", label: "Hoạt động" },
+            { value: "inactive", label: "Ngừng hoạt động" },
+          ]}
+        />
+        <Input style={{ width: "300px" }} value={search} onChange={e => setSearch(e.target.value)} placeholder="Tìm kiếm"/>
+      </div>
 
-      <Table columns={columns} dataSource={rows} rowKey="id" />
+      <Table columns={columns} dataSource={filtered} rowKey="id" />
 
       <Modal open={open} title={editing ? "Sửa sản phẩm" : "Thêm sản phẩm"} onCancel={() => setOpen(false)} footer={null}>
         <Form form={form} layout="vertical" onFinish={onSubmit}>
