@@ -1,0 +1,51 @@
+{
+  "products": [
+    {
+      "id": "1",
+      "code": "P001",
+      "name": "Laptop A",
+      "categoryId": "1",
+      "price": 12000000,
+      "image": "https://res.cloudinary.com/dxkw3nupk/image/upload/v1759197571/twsfjnrd5x3xgo2bu3hs.webp",
+      "status": "inactive"
+    },
+    {
+      "id": "1759225359198",
+      "code": "p002",
+      "name": "Núi Phú Sỹ",
+      "categoryId": "yPns9rJ",
+      "price": 300000,
+      "image": "https://res.cloudinary.com/dxkw3nupk/image/upload/v1759226929/usnmlxsfbw2ddxja8ltf.jpg",
+      "status": "active"
+    },
+    {
+      "id": "1759226865785",
+      "code": "p003",
+      "name": "Keera",
+      "categoryId": "sfKlitU",
+      "price": 300000,
+      "image": "https://res.cloudinary.com/dxkw3nupk/image/upload/v1759226861/dmlydqosi7jsbzhyqlpm.jpg",
+      "status": "inactive"
+    }
+  ],
+  "categories": [
+    {
+      "id": "1",
+      "name": "Laptop",
+      "description": "Máy tính xách tay",
+      "status": "active"
+    },
+    {
+      "name": "Phong cảnh",
+      "status": "inactive",
+      "description": "Nhật Bản, Việt Nam và nhiều nước khác",
+      "id": "yPns9rJ"
+    },
+    {
+      "name": "Skin AOV",
+      "status": "active",
+      "description": "Nơi bán trang phục AOV",
+      "id": "sfKlitU"
+    }
+  ]
+}
